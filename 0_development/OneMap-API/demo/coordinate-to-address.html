@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneMap Demo：座標反查完整地址</title>
+    <link rel="stylesheet" href="./coordinate-to-address.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="title">
+        <h1>OneMap Demo：座標 → 完整地址（Reverse Geocode）</h1>
+        <div class="sub">純前端 HTML/CSS/JS，可直接拷貝到其他專案使用</div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>輸入</h2>
+
+          <div class="row">
+            <div>
+              <label for="lat">Latitude（緯度）</label>
+              <input id="lat" inputmode="decimal" placeholder="例：1.3521" />
+            </div>
+            <div>
+              <label for="lng">Longitude（經度）</label>
+              <input id="lng" inputmode="decimal" placeholder="例：103.8198" />
+            </div>
+          </div>
+
+          <div class="row3">
+            <div>
+              <label for="buffer">Buffer（公尺）</label>
+              <input id="buffer" inputmode="numeric" value="50" />
+            </div>
+            <div>
+              <label for="addressType">Address Type</label>
+              <select id="addressType">
+                <option value="All">All（最通用）</option>
+                <option value="HDB">HDB</option>
+                <option value="Private">Private</option>
+              </select>
+            </div>
+            <div>
+              <label for="preset">快速範例</label>
+              <select id="preset">
+                <option value="">—</option>
+                <option value="1.3521,103.8198">Singapore (1.3521, 103.8198)</option>
+                <option value="1.2830,103.8607">Marina Bay (1.2830, 103.8607)</option>
+                <option value="1.3009,103.8570">Bugis (1.3009, 103.8570)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btns">
+            <button class="primary" id="btnLookup">查詢地址</button>
+            <button id="btnGeo">使用目前定位</button>
+            <button id="btnSwap">交換 Lat/Lng</button>
+            <button id="btnClear">清除</button>
+          </div>
+
+          <div class="hint">
+            注意：如果你用「直接開檔」方式（file://）可能會被瀏覽器限制 module 載入；建議用 `npm run dev`
+            或 `python -m http.server` 之類方式提供靜態站點。
+          </div>
+          <div class="error" id="error" hidden></div>
+        </div>
+
+        <div class="card">
+          <h2>結果（可直接拷貝）</h2>
+          <div class="kv">
+            <div class="k">完整地址</div>
+            <div class="v" id="fullAddress">—</div>
+            <div class="k">郵遞區號</div>
+            <div class="v" id="postal">—</div>
+            <div class="k">道路 / 區塊</div>
+            <div class="v" id="roadBlock">—</div>
+            <div class="k">建築物名稱</div>
+            <div class="v" id="building">—</div>
+            <div class="k">OneMap 連結</div>
+            <div class="v"><a id="onemapLink" target="_blank" rel="noopener noreferrer">—</a></div>
+          </div>
+
+          <div class="btns">
+            <button id="btnCopyAddress" disabled>複製完整地址</button>
+            <button id="btnCopyJson" disabled>複製原始 JSON</button>
+          </div>
+
+          <div class="code" id="copySnippet">
+            // 可複製到任何專案：<br />
+            import { reverseGeocode } from './onemap-revgeocode.js';<br />
+            const res = await reverseGeocode({ lat: 1.3521, lng: 103.8198 });<br />
+            console.log(res.fullAddress, res.best);
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 14px">
+        <h2>原始回應（Debug）</h2>
+        <textarea id="rawJson" readonly placeholder="查詢後會顯示 OneMap 回傳 JSON"></textarea>
+      </div>
+    </div>
+    <script type="module" src="./coordinate-to-address.js"></script>
+  </body>
+</html>

@@ -59,9 +59,7 @@ export const OneMapService = {
 
       // Use Reverse Geocode for coordinates
       const url = `${BASE_API_URL}/public/revgeocode?location=${lat},${lng}&buffer=50&addressType=All`;
-      const response = await fetch(url, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
       
       if (!response.ok) throw new Error('Reverse Geocode failed for coordinates.');
       const data: RevGeoResponse = await response.json();
@@ -107,23 +105,24 @@ export const OneMapService = {
     return response.json();
   },
 
-  reverseGeocode: async (lat: number, lng: number, token: string): Promise<RevGeoResponse> => {
+  reverseGeocode: async (lat: number, lng: number, token?: string): Promise<RevGeoResponse> => {
     const url = `${BASE_API_URL}/public/revgeocode?location=${lat},${lng}&buffer=50&addressType=All`;
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    const response = await fetch(url, token ? { headers } : undefined);
     if (!response.ok) throw new Error('Reverse Geocode failed');
     return response.json();
   },
 
-  getRoute: async (start: LatLng, end: LatLng, routeType: 'drive' | 'walk' | 'cycle', token: string): Promise<{ geometry: [number, number][], summary: any } | null> => {
+  getRoute: async (start: LatLng, end: LatLng, routeType: 'drive' | 'walk' | 'cycle', token?: string): Promise<{ geometry: [number, number][], summary: any } | null> => {
     const startStr = `${start.lat},${start.lng}`;
     const endStr = `${end.lat},${end.lng}`;
     const url = `${BASE_API_URL}/public/routingsvc/route?start=${startStr}&end=${endStr}&routeType=${routeType}`;
     
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(url, token ? { headers } : undefined);
     
     if (!response.ok) return null;
     const data: RouteResponse = await response.json();
@@ -137,30 +136,30 @@ export const OneMapService = {
     return null;
   },
 
-  getTheme: async (themeName: string, token: string): Promise<ThemeResponse> => {
+  getTheme: async (themeName: string, token?: string): Promise<ThemeResponse> => {
     const url = `${BASE_API_URL}/public/themesvc/retrieveTheme?queryName=${themeName}`;
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(url, token ? { headers } : undefined);
     if (!response.ok) throw new Error('Theme fetch failed');
     return response.json();
   },
 
-  getPlanningAreas: async (token: string): Promise<PlanningAreaResponse> => {
+  getPlanningAreas: async (token?: string): Promise<PlanningAreaResponse> => {
     // 2024 Planning Areas
     const url = `${BASE_API_URL}/public/planningarea?year=2024`; 
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(url, token ? { headers } : undefined);
     if (!response.ok) throw new Error('Planning Area fetch failed');
     return response.json();
   },
 
-  convertCoordinates: async (lat: number, lng: number, token: string): Promise<ConverterResponse> => {
+  convertCoordinates: async (lat: number, lng: number, token?: string): Promise<ConverterResponse> => {
     const url = `${BASE_API_URL}/common/convert/4326to3414?latitude=${lat}&longitude=${lng}`;
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(url, token ? { headers } : undefined);
     if (!response.ok) throw new Error('Conversion failed');
     return response.json();
   }

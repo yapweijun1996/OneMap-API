@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneMap Demo：Static Map</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div class="mx-auto max-w-6xl px-4 py-10">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900">Static Map（生成 PNG 图片）</h1>
+          <p class="mt-2 text-slate-600">
+            对应 API：<code class="font-mono">GET /staticmap/getStaticImage</code>
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <a class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="./index.html">Demo Hub</a>
+          <a class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" href="../app.html">Explorer</a>
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+          <div class="text-sm font-bold text-slate-900">输入</div>
+
+          <label class="mt-3 block text-xs font-semibold text-slate-600" for="layer">layerchosen</label>
+          <select id="layer" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400">
+            <option value="default" selected>default</option>
+            <option value="grey">grey</option>
+            <option value="night">night</option>
+            <option value="original">original</option>
+            <option value="landlot">landlot</option>
+          </select>
+
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="lat">latitude</label>
+              <input id="lat" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-slate-400" value="1.31955" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="lng">longitude</label>
+              <input id="lng" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-slate-400" value="103.84223" />
+            </div>
+          </div>
+
+          <div class="mt-3 grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="zoom">zoom</label>
+              <input id="zoom" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-slate-400" value="17" inputmode="numeric" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="w">width</label>
+              <input id="w" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-slate-400" value="400" inputmode="numeric" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="h">height</label>
+              <input id="h" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-slate-400" value="512" inputmode="numeric" />
+            </div>
+          </div>
+
+          <label class="mt-3 block text-xs font-semibold text-slate-600" for="points">points（可选）</label>
+          <input
+            id="points"
+            class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-slate-400"
+            placeholder="[lat,lng]|[lat,lng]"
+            value="[1.31955,103.84223]"
+          />
+          <div class="mt-1 text-[11px] text-slate-500">提示：points 格式来自 OneMap 文档；复杂 lines/polygons 可直接复制到 URL。</div>
+
+          <button id="btn" class="mt-4 w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Generate Image</button>
+          <div id="err" class="mt-3 hidden rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700"></div>
+
+          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+            示例请求：
+            <div class="mt-1 font-mono">
+              /api/staticmap/getStaticImage?layerchosen=default&latitude=1.31955&longitude=103.84223&zoom=17&width=400&height=512
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-sm font-bold text-slate-900">预览</div>
+            <button id="btnCopy" class="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50" disabled>复制 URL</button>
+          </div>
+
+          <div id="url" class="mt-2 break-all rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-mono text-slate-700">等待生成…</div>
+          <div class="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <img id="img" alt="static map" class="w-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const BASE = 'https://www.onemap.gov.sg/api';
+      const $ = (id) => document.getElementById(id);
+
+      const layerEl = $('layer');
+      const latEl = $('lat');
+      const lngEl = $('lng');
+      const zoomEl = $('zoom');
+      const wEl = $('w');
+      const hEl = $('h');
+      const pointsEl = $('points');
+      const btnEl = $('btn');
+      const errEl = $('err');
+      const urlEl = $('url');
+      const imgEl = $('img');
+      const copyEl = $('btnCopy');
+
+      function setError(message) {
+        if (!message) {
+          errEl.classList.add('hidden');
+          errEl.textContent = '';
+          return;
+        }
+        errEl.classList.remove('hidden');
+        errEl.textContent = message;
+      }
+
+      btnEl.addEventListener('click', async () => {
+        setError(null);
+        copyEl.disabled = true;
+        urlEl.textContent = '生成中…';
+        imgEl.removeAttribute('src');
+
+        const layer = (layerEl.value || 'default').trim();
+        const lat = parseFloat((latEl.value || '').trim());
+        const lng = parseFloat((lngEl.value || '').trim());
+        const zoom = parseInt((zoomEl.value || '').trim(), 10);
+        const width = parseInt((wEl.value || '').trim(), 10);
+        const height = parseInt((hEl.value || '').trim(), 10);
+        const points = (pointsEl.value || '').trim();
+
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return setError('latitude/longitude 必须是数字');
+        if (!Number.isFinite(zoom) || zoom < 11 || zoom > 19) return setError('zoom 需在 11~19');
+        if (!Number.isFinite(width) || width <= 0) return setError('width 必须是正整数');
+        if (!Number.isFinite(height) || height <= 0) return setError('height 必须是正整数');
+
+        const params = new URLSearchParams();
+        params.set('layerchosen', layer);
+        params.set('latitude', String(lat));
+        params.set('longitude', String(lng));
+        params.set('postal', '');
+        params.set('zoom', String(zoom));
+        params.set('width', String(width));
+        params.set('height', String(height));
+        if (points) params.set('points', points);
+
+        const url = `${BASE}/staticmap/getStaticImage?${params.toString()}`;
+        urlEl.textContent = url;
+        imgEl.src = url;
+        copyEl.disabled = false;
+        copyEl.onclick = async () => navigator.clipboard.writeText(url);
+      });
+    </script>
+  </body>
+</html>

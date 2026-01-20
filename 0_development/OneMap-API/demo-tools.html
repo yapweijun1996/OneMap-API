@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneMap Demo - Coordinate Conversion Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-orange-50 via-white to-orange-100 min-h-screen p-6">
+
+    <!-- Back to Dashboard -->
+    <div class="max-w-5xl mx-auto mb-4">
+        <a href="index.html" class="inline-flex items-center text-orange-600 hover:text-orange-800 font-medium">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-block mb-3">
+                <div
+                    class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span class="text-4xl">🛠️</span>
+                </div>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Coordinate Conversion Tools</h1>
+            <p class="text-gray-600">Convert coordinates between WGS84, SVY21, and EPSG:3857 systems</p>
+        </div>
+
+        <!-- Coordinate System Info -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-2 border-orange-100">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Coordinate Systems</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-blue-50 rounded-xl">
+                    <div class="text-2xl mb-2">🌍</div>
+                    <h3 class="font-bold text-blue-900 mb-1">WGS84</h3>
+                    <p class="text-sm text-blue-700">World Geodetic System 1984. Global standard used by GPS
+                        (Latitude/Longitude).</p>
+                    <p class="text-xs text-blue-600 mt-2 font-mono">Example: 1.3521, 103.8198</p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-xl">
+                    <div class="text-2xl mb-2">🇸🇬</div>
+                    <h3 class="font-bold text-green-900 mb-1">SVY21</h3>
+                    <p class="text-sm text-green-700">Singapore's national projected coordinate system (Northing/Easting
+                        in meters).</p>
+                    <p class="text-xs text-green-600 mt-2 font-mono">Example: 38744.572, 28001.642</p>
+                </div>
+                <div class="p-4 bg-purple-50 rounded-xl">
+                    <div class="text-2xl mb-2">🗺️</div>
+                    <h3 class="font-bold text-purple-900 mb-1">EPSG:3857</h3>
+                    <p class="text-sm text-purple-700">Web Mercator projection. Used by Google Maps, OpenStreetMap, etc.
+                    </p>
+                    <p class="text-xs text-purple-600 mt-2 font-mono">Example: 11562388.7, 150634.3</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion Tools -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- WGS84 to SVY21 -->
+            <div class="tool-card bg-white rounded-2xl shadow-lg p-6 border-2 border-orange-100">
+                <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span>🌍 → 🇸🇬</span>
+                    <span>WGS84 to SVY21</span>
+                </h3>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Latitude</label>
+                        <input type="number" id="wgs84Lat" step="0.000001" placeholder="1.3521"
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Longitude</label>
+                        <input type="number" id="wgs84Lng" step="0.000001" placeholder="103.8198"
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none">
+                    </div>
+                    <button id="btnWgsToSvy"
+                        class="w-full bg-gradient-to-r from-orange-500 to-orange-700 text-white font-semibold py-3 rounded-xl hover:shadow-lg transition-all">
+                        Convert to SVY21
+                    </button>
+                    <div id="resultWgsToSvy" class="p-3 bg-green-50 border border-green-200 rounded-xl hidden">
+                        <p class="text-sm font-semibold text-green-900 mb-1">Result:</p>
+                        <p class="text-sm text-green-800 font-mono" id="resultWgsToSvyText"></p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-orange-50 rounded-xl">
+                    <p class="text-xs text-orange-700">
+                        <strong>Quick Example:</strong> Raffles Place<br>
+                        <button class="text-orange-600 hover:underline" onclick="fillWgs84Example()">
+                            Click to fill: 1.283627, 103.851959
+                        </button>
+                    </p>
+                </div>
+            </div>
+
+            <!-- SVY21 to WGS84 -->
+            <div class="tool-card bg-white rounded-2xl shadow-lg p-6 border-2 border-orange-100">
+                <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span>🇸🇬 → 🌍</span>
+                    <span>SVY21 to WGS84</span>
+                </h3>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Northing (Y)</label>
+                        <input type="number" id="svy21North" step="0.001" placeholder="38744.572"
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Easting (X)</label>
+                        <input type="number" id="svy21East" step="0.001" placeholder="28001.642"
+                            class="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none">
+                    </div>
+                    <button id="btnSvyToWgs"
+                        class="w-full bg-gradient-to-r from-orange-500 to-orange-700 text-white font-semibold py-3 rounded-xl hover:shadow-lg transition-all">
+                        Convert to WGS84
+                    </button>
+                    <div id="resultSvyToWgs" class="p-3 bg-green-50 border border-green-200 rounded-xl hidden">
+                        <p class="text-sm font-semibold text-green-900 mb-1">Result:</p>
+                        <p class="text-sm text-green-800 font-mono" id="resultSvyToWgsText"></p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-orange-50 rounded-xl">
+                    <p class="text-xs text-orange-700">
+                        <strong>Quick Example:</strong> Marina Bay<br>
+                        <button class="text-orange-600 hover:underline" onclick="fillSvy21Example()">
+                            Click to fill: 29654.024, 30179.229
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Conversion -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-2 border-orange-100">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">📋 Batch Conversion</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Input (one coordinate pair per
+                        line)</label>
+                    <textarea id="batchInput" rows="6"
+                        placeholder="1.3521,103.8198&#10;1.2830,103.8607&#10;1.3009,103.8570"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none font-mono text-sm"></textarea>
+
+                    <div class="flex gap-2 mt-3">
+                        <select id="batchConversionType"
+                            class="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none">
+                            <option value="wgs-to-svy">WGS84 → SVY21</option>
+                            <option value="svy-to-wgs">SVY21 → WGS84</option>
+                        </select>
+                        <button id="btnBatchConvert"
+                            class="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+                            Convert All
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Output</label>
+                    <textarea id="batchOutput" rows="6" readonly placeholder="Results will appear here..."
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 font-mono text-sm"></textarea>
+
+                    <button id="btnCopyBatch"
+                        class="w-full mt-3 px-6 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+                        📋 Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Reference -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 border-2 border-orange-100">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">📖 API Reference</h3>
+
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">WGS84 to SVY21</h4>
+                    <div class="code-block">
+                        GET https://www.onemap.gov.sg/api/common/convert/4326to3414<br>
+                        ?latitude=1.3521&longitude=103.8198
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">SVY21 to WGS84</h4>
+                    <div class="code-block">
+                        GET https://www.onemap.gov.sg/api/common/convert/3414to4326<br>
+                        ?X=28001.642&Y=38744.572
+                    </div>
+                </div>
+
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <p class="text-sm text-blue-900">
+                        <strong>💡 Note:</strong> These conversions are essential for integrating OneMap data with other
+                        mapping services
+                        or when working with Singapore's official survey data. WGS84 is used by GPS and most web maps,
+                        while SVY21 is
+                        Singapore's official coordinate system for surveying and land administration.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WGS84 to SVY21 Conversion
+        document.getElementById('btnWgsToSvy').addEventListener('click', async () => {
+            const lat = parseFloat(document.getElementById('wgs84Lat').value);
+            const lng = parseFloat(document.getElementById('wgs84Lng').value);
+
+            if (!lat || !lng) {
+                alert('Please enter valid latitude and longitude');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://www.onemap.gov.sg/api/common/convert/4326to3414?latitude=${lat}&longitude=${lng}`);
+                const data = await response.json();
+
+                const resultEl = document.getElementById('resultWgsToSvy');
+                const resultTextEl = document.getElementById('resultWgsToSvyText');
+
+                resultTextEl.textContent = `N: ${data.Y}, E: ${data.X}`;
+                resultEl.classList.remove('hidden');
+            } catch (error) {
+                alert('Conversion failed: ' + error.message);
+            }
+        });
+
+        // SVY21 to WGS84 Conversion
+        document.getElementById('btnSvyToWgs').addEventListener('click', async () => {
+            const north = parseFloat(document.getElementById('svy21North').value);
+            const east = parseFloat(document.getElementById('svy21East').value);
+
+            if (!north || !east) {
+                alert('Please enter valid northing and easting values');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://www.onemap.gov.sg/api/common/convert/3414to4326?X=${east}&Y=${north}`);
+                const data = await response.json();
+
+                const resultEl = document.getElementById('resultSvyToWgs');
+                const resultTextEl = document.getElementById('resultSvyToWgsText');
+
+                resultTextEl.textContent = `Lat: ${data.latitude}, Lng: ${data.longitude}`;
+                resultEl.classList.remove('hidden');
+            } catch (error) {
+                alert('Conversion failed: ' + error.message);
+            }
+        });
+
+        // Batch Conversion
+        document.getElementById('btnBatchConvert').addEventListener('click', async () => {
+            const input = document.getElementById('batchInput').value.trim();
+            const conversionType = document.getElementById('batchConversionType').value;
+            const outputEl = document.getElementById('batchOutput');
+
+            if (!input) {
+                alert('Please enter coordinates to convert');
+                return;
+            }
+
+            const lines = input.split('\n').filter(line => line.trim());
+            const results = [];
+
+            for (const line of lines) {
+                const [val1, val2] = line.split(',').map(v => parseFloat(v.trim()));
+
+                if (!val1 || !val2) {
+                    results.push(`Error: Invalid format - ${line}`);
+                    continue;
+                }
+
+                try {
+                    let response, data;
+
+                    if (conversionType === 'wgs-to-svy') {
+                        response = await fetch(`https://www.onemap.gov.sg/api/common/convert/4326to3414?latitude=${val1}&longitude=${val2}`);
+                        data = await response.json();
+                        results.push(`${data.Y},${data.X}`);
+                    } else {
+                        response = await fetch(`https://www.onemap.gov.sg/api/common/convert/3414to4326?X=${val2}&Y=${val1}`);
+                        data = await response.json();
+                        results.push(`${data.latitude},${data.longitude}`);
+                    }
+                } catch (error) {
+                    results.push(`Error: ${line}`);
+                }
+            }
+
+            outputEl.value = results.join('\n');
+        });
+
+        // Copy batch results
+        document.getElementById('btnCopyBatch').addEventListener('click', () => {
+            const output = document.getElementById('batchOutput');
+            if (!output.value) {
+                alert('No results to copy');
+                return;
+            }
+
+            output.select();
+            document.execCommand('copy');
+
+            const btn = document.getElementById('btnCopyBatch');
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        });
+
+        // Example fill functions
+        window.fillWgs84Example = function () {
+            document.getElementById('wgs84Lat').value = '1.283627';
+            document.getElementById('wgs84Lng').value = '103.851959';
+        };
+
+        window.fillSvy21Example = function () {
+            document.getElementById('svy21North').value = '29654.024';
+            document.getElementById('svy21East').value = '30179.229';
+        };
+
+        // Enter key support
+        ['wgs84Lat', 'wgs84Lng'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('btnWgsToSvy').click();
+            });
+        });
+
+        ['svy21North', 'svy21East'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('btnSvyToWgs').click();
+            });
+        });
+    </script>
+</body>
+
+</html>

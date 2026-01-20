@@ -1,0 +1,473 @@
+/* AMENDMENT [start] "Redesign to Apple style - preserving old styles commented out" */
+/*
+:root {
+  color-scheme: light dark;
+  --bg: #0b1020;
+  --card: #121a33;
+  --text: #eaf0ff;
+  --muted: #a9b5d1;
+  --border: rgba(255, 255, 255, 0.12);
+  --accent: #5dd6ff;
+  --bad: #ff6b6b;
+  --ok: #51cf66;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f6f8ff;
+    --card: #ffffff;
+    --text: #0b1020;
+    --muted: #53607a;
+    --border: rgba(11, 16, 32, 0.12);
+    --accent: #0066ff;
+    --bad: #c92a2a;
+    --ok: #2f9e44;
+  }
+}
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background: radial-gradient(900px 600px at 20% 10%, rgba(93, 214, 255, 0.18), transparent),
+    radial-gradient(900px 600px at 70% 30%, rgba(0, 102, 255, 0.14), transparent), var(--bg);
+  color: var(--text);
+}
+.wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 420px 1fr;
+    align-items: start;
+  }
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+h1 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+.sub {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 10px 0 6px;
+}
+input,
+select,
+button,
+textarea {
+  font: inherit;
+}
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  outline: none;
+}
+input:focus,
+select:focus {
+  border-color: rgba(93, 214, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(93, 214, 255, 0.12);
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+button {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(93, 214, 255, 0.12);
+  color: var(--text);
+  cursor: pointer;
+}
+button.primary {
+  border-color: rgba(93, 214, 255, 0.55);
+  background: rgba(93, 214, 255, 0.18);
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.pill b {
+  color: var(--text);
+  font-weight: 600;
+}
+.status.ok b {
+  color: var(--ok);
+}
+.status.bad b {
+  color: var(--bad);
+}
+.results {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+.result {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.result .addr {
+  font-size: 14px;
+  font-weight: 650;
+  margin-bottom: 6px;
+}
+.result .meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  word-break: break-word;
+}
+pre {
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.12);
+  overflow: auto;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+}
+*/
+/* AMENDMENT [end] "Redesign to Apple style - preserving old styles commented out" */
+
+
+/* AMENDMENT [start] "New Apple Style Implementation" */
+:root {
+  --bg-color: #f5f5f7;
+  --card-bg: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --accent-color: #0071e3;
+  --accent-hover: #0077ed;
+  --border-color: #d2d2d7;
+  --input-bg-color: #ffffff;
+  --radius: 12px;
+  --bad: #ff3b30;
+  --ok: #34c759;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #000000;
+    --card-bg: #1c1c1e;
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --accent-color: #2997ff;
+    --accent-hover: #0071e3;
+    --border-color: #38383a;
+    --input-bg-color: #1c1c1e;
+  }
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.apple-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.apple-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.apple-header h1 {
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px 0;
+}
+
+.apple-header p {
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.apple-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+@media (min-width: 800px) {
+  .apple-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.apple-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.apple-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  letter-spacing: 0.01em;
+}
+
+/* Form Elements */
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  margin-top: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0em;
+}
+
+label:first-of-type {
+  margin-top: 0;
+}
+
+input,
+select {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg-color);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 17px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  appearance: none;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Buttons */
+.apple-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+@media (min-width: 500px) {
+  .apple-btns {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.apple-btn {
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 980px;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+  text-align: center;
+  min-width: 120px;
+}
+
+.apple-btn:active {
+  transform: scale(0.98);
+}
+
+.apple-btn:disabled {
+  background: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.apple-btn-secondary {
+  background: transparent;
+  color: var(--accent-color);
+  border: 1px solid transparent;
+}
+
+.apple-btn-secondary:hover {
+  background: rgba(0, 113, 227, 0.05);
+}
+
+/* Status Pill */
+.status-pill {
+  margin-top: 24px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-pill.ok {
+  color: var(--ok);
+  background: rgba(52, 199, 89, 0.1);
+}
+
+.status-pill.bad {
+  color: var(--bad);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+/* Results */
+.result-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-addr {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.result-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Code Block / JSON View */
+.json-view {
+  background: #1e1e1e;
+  /* Dark editor background for contrast */
+  color: #d4d4d4;
+  /* Base text color */
+  padding: 20px;
+  border-radius: 14px;
+  /* Slightly larger radius */
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin-top: 24px;
+  max-height: 400px;
+  white-space: pre;
+  /* Preserve whitespace */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for depth */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Syntax Highlighting Colors (VS Code Dark-ish) */
+.json-key {
+  color: #9cdcfe;
+}
+
+/* Light Blue */
+.json-string {
+  color: #ce9178;
+}
+
+/* Orange/Brown */
+.json-number {
+  color: #b5cea8;
+}
+
+/* Light Green */
+.json-boolean {
+  color: #569cd6;
+}
+
+/* Blue */
+.json-null {
+  color: #569cd6;
+}
+
+/* Blue */
+
+.footer-hint {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* AMENDMENT [end] "New Apple Style Implementation" */

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import MapComponent from './components/MapComponent';
 import { OneMapSearchResult, MapStyle, LatLng, ThemeItem, PlanningAreaFeature } from './types';
@@ -24,10 +24,30 @@ const App: React.FC = () => {
   const [planningAreas, setPlanningAreas] = useState<PlanningAreaFeature[]>([]);
   const [showPlanningAreas, setShowPlanningAreas] = useState(false);
 
+  /* AMENDMENT [start] "Auth: Persist Token" */
+  /*
   const handleLogin = async (email: string, pass: string) => {
     const data = await OneMapService.login(email, pass);
     setToken(data.access_token);
   };
+  */
+
+  useEffect(() => {
+    const stored = localStorage.getItem('onemap_token');
+    if (stored) setToken(stored);
+  }, []);
+
+  const handleLogin = async (email: string, pass: string) => {
+    const data = await OneMapService.login(email, pass);
+    localStorage.setItem('onemap_token', data.access_token);
+    setToken(data.access_token);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('onemap_token');
+    setToken(null);
+  };
+  /* AMENDMENT [end] "Auth: Persist Token" */
 
   const handleLocationSelect = (loc: OneMapSearchResult) => {
     setSelectedLocation(loc);
@@ -64,7 +84,7 @@ const App: React.FC = () => {
     if (data) {
       setRouteGeometry(data.geometry);
       setRouteSummary(data.summary);
-      setMapCenter([(startPoint.lat + endPoint.lat)/2, (startPoint.lng + endPoint.lng)/2]);
+      setMapCenter([(startPoint.lat + endPoint.lat) / 2, (startPoint.lng + endPoint.lng) / 2]);
       setZoom(13);
     }
   };
@@ -80,8 +100,8 @@ const App: React.FC = () => {
     } else {
       const freshItems: ThemeItem[] = [];
       for (const t of newThemes) {
-         const data = await OneMapService.getTheme(t, token);
-         freshItems.push(...data.SrchResults);
+        const data = await OneMapService.getTheme(t, token);
+        freshItems.push(...data.SrchResults);
       }
       setThemeItems(freshItems);
     }
@@ -102,9 +122,10 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden font-sans bg-gray-100">
-      <Sidebar 
+      <Sidebar
         token={token}
         onLogin={handleLogin}
+        onLogout={handleLogout}
         onLocationSelect={handleLocationSelect}
         onStyleChange={setMapStyle}
         currentStyle={mapStyle}
@@ -122,7 +143,7 @@ const App: React.FC = () => {
       />
 
       <div className="flex-1 relative h-full">
-        <MapComponent 
+        <MapComponent
           center={mapCenter}
           zoom={zoom}
           activeLocation={selectedLocation}

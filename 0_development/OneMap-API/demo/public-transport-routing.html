@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneMap Demo：Public Transport Routing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div class="mx-auto max-w-6xl px-4 py-10">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900">Public Transport Routing（公交 / MRT 换乘）</h1>
+          <p class="mt-2 text-slate-600">
+            对应 API：<code class="font-mono">GET /public/routingsvc/route</code>（<code class="font-mono">routeType=pt</code>）
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <a class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="./index.html">Demo Hub</a>
+          <a class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" href="../app.html">Explorer</a>
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+          <div class="text-sm font-bold text-slate-900">输入</div>
+
+          <label class="mt-3 block text-xs font-semibold text-slate-600" for="token">Bearer Token（必填）</label>
+          <input
+            id="token"
+            class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-emerald-400"
+            placeholder="从 auth-token demo 获取 access_token"
+          />
+
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="start">Start (lat,lng)</label>
+              <input id="start" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-emerald-400" value="1.320981,103.844150" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="end">End (lat,lng)</label>
+              <input id="end" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-emerald-400" value="1.326762,103.8559" />
+            </div>
+          </div>
+
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="date">date (MM-DD-YYYY)</label>
+              <input id="date" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-emerald-400" value="08-13-2023" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="time">time (HH:mm:ss)</label>
+              <input id="time" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-emerald-400" value="07:35:00" />
+            </div>
+          </div>
+
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="maxWalk">maxWalkDistance (m)</label>
+              <input id="maxWalk" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-emerald-400" value="1000" inputmode="numeric" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600" for="n">numItineraries</label>
+              <input id="n" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-emerald-400" value="3" inputmode="numeric" />
+            </div>
+          </div>
+
+          <label class="mt-3 block text-xs font-semibold text-slate-600" for="mode">mode</label>
+          <select id="mode" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-emerald-400">
+            <option value="TRANSIT" selected>TRANSIT</option>
+          </select>
+
+          <button id="btn" class="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Get PT Route</button>
+          <div id="err" class="mt-3 hidden rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700"></div>
+
+          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+            示例请求：
+            <div class="mt-1 font-mono">
+              /api/public/routingsvc/route?start=...&end=...&routeType=pt&date=08-13-2023&time=07%3A35%3A00&mode=TRANSIT&maxWalkDistance=1000&numItineraries=3
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-sm font-bold text-slate-900">结果</div>
+            <button id="btnCopy" class="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50" disabled>复制 JSON</button>
+          </div>
+
+          <div id="summary" class="mt-2 text-xs text-slate-600">等待请求…</div>
+          <div id="itins" class="mt-3 space-y-2"></div>
+          <pre id="raw" class="mt-3 h-56 overflow-auto rounded-xl bg-slate-950 p-3 text-xs text-slate-100"></pre>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const BASE = 'https://www.onemap.gov.sg/api';
+      const $ = (id) => document.getElementById(id);
+
+      const tokenEl = $('token');
+      const startEl = $('start');
+      const endEl = $('end');
+      const dateEl = $('date');
+      const timeEl = $('time');
+      const maxWalkEl = $('maxWalk');
+      const nEl = $('n');
+      const modeEl = $('mode');
+      const btnEl = $('btn');
+      const errEl = $('err');
+      const summaryEl = $('summary');
+      const itinsEl = $('itins');
+      const rawEl = $('raw');
+      const copyEl = $('btnCopy');
+
+      function setError(message) {
+        if (!message) {
+          errEl.classList.add('hidden');
+          errEl.textContent = '';
+          return;
+        }
+        errEl.classList.remove('hidden');
+        errEl.textContent = message;
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function parseLatLng(input) {
+        const m = String(input || '')
+          .trim()
+          .match(/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/);
+        if (!m) return null;
+        const lat = parseFloat(m[1]);
+        const lng = parseFloat(m[3]);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+        return { lat, lng };
+      }
+
+      async function fetchJson(url, init) {
+        const res = await fetch(url, init);
+        const text = await res.text().catch(() => '');
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}${text ? ` - ${text}` : ''}`);
+        return text ? JSON.parse(text) : {};
+      }
+
+      function renderItineraries(json) {
+        itinsEl.innerHTML = '';
+        const itineraries = Array.isArray(json?.plan?.itineraries) ? json.plan.itineraries : [];
+        for (const [i, it] of itineraries.entries()) {
+          const duration = it?.duration;
+          const walkTime = it?.walkTime;
+          const transitTime = it?.transitTime;
+          const transfers = it?.transfers;
+          const el = document.createElement('div');
+          el.className = 'rounded-xl border border-slate-200 bg-slate-50 p-3';
+          el.innerHTML = `
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-sm font-bold text-slate-900">Itinerary #${i + 1}</div>
+              <div class="text-xs text-slate-600">duration=${escapeHtml(duration ?? '-')}</div>
+            </div>
+            <div class="mt-1 text-xs text-slate-700">walkTime=${escapeHtml(walkTime ?? '-')} • transitTime=${escapeHtml(transitTime ?? '-')} • transfers=${escapeHtml(transfers ?? '-')}</div>
+          `;
+          itinsEl.appendChild(el);
+        }
+        return itineraries.length;
+      }
+
+      btnEl.addEventListener('click', async () => {
+        setError(null);
+        copyEl.disabled = true;
+        summaryEl.textContent = '请求中…';
+        rawEl.textContent = '';
+        itinsEl.innerHTML = '';
+
+        const token = (tokenEl.value || '').trim();
+        if (!token) return setError('此接口通常需要 token：请先用 auth-token demo 获取 access_token');
+
+        const start = parseLatLng(startEl.value);
+        const end = parseLatLng(endEl.value);
+        if (!start) return setError('Start 格式必须是：lat,lng');
+        if (!end) return setError('End 格式必须是：lat,lng');
+
+        const date = (dateEl.value || '').trim();
+        const time = (timeEl.value || '').trim();
+        const maxWalk = parseInt((maxWalkEl.value || '').trim(), 10);
+        const n = parseInt((nEl.value || '').trim(), 10);
+        const mode = (modeEl.value || '').trim();
+
+        if (!/^\d{2}-\d{2}-\d{4}$/.test(date)) return setError('date 格式必须是 MM-DD-YYYY');
+        if (!/^\d{2}:\d{2}:\d{2}$/.test(time)) return setError('time 格式必须是 HH:mm:ss');
+        if (!Number.isFinite(maxWalk) || maxWalk <= 0) return setError('maxWalkDistance 必须是正整数');
+        if (!Number.isFinite(n) || n <= 0) return setError('numItineraries 必须是正整数');
+        if (!mode) return setError('mode 不能为空');
+
+        const url =
+          `${BASE}/public/routingsvc/route` +
+          `?start=${encodeURIComponent(`${start.lat},${start.lng}`)}` +
+          `&end=${encodeURIComponent(`${end.lat},${end.lng}`)}` +
+          `&routeType=pt` +
+          `&date=${encodeURIComponent(date)}` +
+          `&time=${encodeURIComponent(time)}` +
+          `&mode=${encodeURIComponent(mode)}` +
+          `&maxWalkDistance=${encodeURIComponent(maxWalk)}` +
+          `&numItineraries=${encodeURIComponent(n)}`;
+
+        try {
+          const json = await fetchJson(url, { headers: { Authorization: `Bearer ${token}` } });
+          rawEl.textContent = JSON.stringify(json, null, 2);
+          copyEl.disabled = false;
+          copyEl.onclick = async () => navigator.clipboard.writeText(JSON.stringify(json, null, 2));
+
+          const itineraryCount = renderItineraries(json);
+          const msg = json?.error?.msg;
+          summaryEl.textContent = msg ? `error=${msg}` : `itineraries=${itineraryCount}`;
+        } catch (e) {
+          setError(e?.message || '请求失败');
+          summaryEl.textContent = '等待请求…';
+        }
+      });
+    </script>
+  </body>
+</html>

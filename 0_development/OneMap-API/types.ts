@@ -56,7 +56,7 @@ export interface RouteResponse {
 
 // Reverse Geocode Types
 export interface RevGeoResponse {
-  GeocodeInfo: [{
+  GeocodeInfo: Array<{
     BUILDINGNAME: string;
     BLOCK: string;
     ROAD: string;
@@ -65,7 +65,7 @@ export interface RevGeoResponse {
     YCOORD: string;
     LATITUDE: string;
     LONGITUDE: string;
-  }]
+  }>;
 }
 
 // Theme Types
