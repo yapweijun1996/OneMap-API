@@ -107,16 +107,16 @@ OneMap-API/
 ### index.html 改动
 ```html
 <!-- 之前 / Before -->
-<a href="app.html#search">...</a>
-<a href="app.html#route">...</a>
-<a href="app.html#layers">...</a>
-<a href="app.html#tools">...</a>
+<a href="./app.html#search">...</a>
+<a href="./app.html#route">...</a>
+<a href="./app.html#layers">...</a>
+<a href="./app.html#tools">...</a>
 
 <!-- 之后 / After -->
-<a href="demo-search.html">...</a>
-<a href="demo-routing.html">...</a>
-<a href="demo-layers.html">...</a>
-<a href="demo-tools.html">...</a>
+<a href="./demo-search.html">...</a>
+<a href="./demo-routing.html">...</a>
+<a href="./demo-layers.html">...</a>
+<a href="./demo-tools.html">...</a>
 ```
 
 ## ⚠️ 注意事项 / Important Notes

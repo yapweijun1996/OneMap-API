@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
+      base: './',
       server: {
         port: 3000,
         host: '0.0.0.0',
@@ -15,6 +16,10 @@ export default defineConfig(({ mode }) => {
           input: {
             index: path.resolve(__dirname, 'index.html'),
             app: path.resolve(__dirname, 'app.html'),
+            demoSearchStandalone: path.resolve(__dirname, 'demo-search.html'),
+            demoRoutingStandalone: path.resolve(__dirname, 'demo-routing.html'),
+            demoLayersStandalone: path.resolve(__dirname, 'demo-layers.html'),
+            demoToolsStandalone: path.resolve(__dirname, 'demo-tools.html'),
             demoIndex: path.resolve(__dirname, 'demo/index.html'),
             demoAuthToken: path.resolve(__dirname, 'demo/auth-token.html'),
             demoSearch: path.resolve(__dirname, 'demo/search.html'),
