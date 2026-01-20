@@ -42,31 +42,13 @@ elBtnLogin.addEventListener('click', async () => {
   }
 });
 
-elBtnLookup.addEventListener('click', async () => {
-  try {
-    setBusy(true);
-
-    /**** AMENDMENT [start] "Add coordinate validation" ****/
-    /****
-    const latStr = elLat.value.trim();
-    const lngStr = elLng.value.trim();
-
-    if (!latStr || !lngStr) {
-      throw new Error('請輸入完整的經緯度座標');
-    }
-
-    const lat = Number(latStr);
-    const lng = Number(lngStr);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      throw new Error('經緯度必須是有效的數字');
-    }
-    ****/
-    /**** AMENDMENT [end  ] "Add coordinate validation" ****/
-
-    /**** AMENDMENT [start] "Add coordinate validation with combined fallback" ****/
-    let latStr = elLat.value.trim();
-    let lngStr = elLng.value.trim();
+	elBtnLookup.addEventListener('click', async () => {
+	  try {
+	    setBusy(true);
+	
+	    /**** AMENDMENT [start] "Add coordinate validation with combined fallback" ****/
+	    let latStr = elLat.value.trim();
+	    let lngStr = elLng.value.trim();
 
     // If lat/lng are empty, try to extract from combined input
     if (!latStr || !lngStr) {
@@ -120,42 +102,9 @@ elBtnClear.addEventListener('click', () => {
   elResults.innerHTML = '';
   elRaw.innerHTML = '';
   elRaw.style.display = 'none';
-  render();
-});
-
-/**** AMENDMENT [start] "Coords Sync Logic" ****/
-/****
-function syncFromSeparate() {
-  const lat = elLat.value.trim();
-  const lng = elLng.value.trim();
-  if (lat && lng) {
-    elCombined.value = `${lat}, ${lng}`;
-  } else {
-    elCombined.value = '';
-  }
-}
-
-function syncFromCombined() {
-  const val = elCombined.value.trim();
-  if (!val) {
-    elLat.value = '';
-    elLng.value = '';
-    return;
-  }
-  // Split by comma or one+ spaces
-  const parts = val.split(/[,\s]+/).map(p => p.trim()).filter(Boolean);
-  if (parts.length >= 2) {
-    elLat.value = parts[0];
-    elLng.value = parts[1];
-  }
-}
-
-elLat.addEventListener('input', syncFromSeparate);
-elLng.addEventListener('input', syncFromSeparate);
-elCombined.addEventListener('input', syncFromCombined);
-****/
-/**** AMENDMENT [end  ] "Coords Sync Logic" ****/
-
+	  render();
+	});
+	
 /**** AMENDMENT [start] "Coords Sync Logic - Fixed infinite loop" ****/
 function syncFromSeparate() {
   if (isSyncing) return;
@@ -305,4 +254,3 @@ function syntaxHighlight(json) {
     return '<span class="' + cls + '">' + match + '</span>';
   });
 }
-

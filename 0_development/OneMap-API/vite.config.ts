@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
             demoAuthToken: path.resolve(__dirname, 'demo/auth-token.html'),
             demoSearch: path.resolve(__dirname, 'demo/search.html'),
             demoReverseGeocode: path.resolve(__dirname, 'demo/reverse-geocode.html'),
+            demoReverseGeocodeEngineer: path.resolve(__dirname, 'demo/reverse-geocode-engineer.html'),
             demoRouting: path.resolve(__dirname, 'demo/routing.html'),
             demoPublicTransportRouting: path.resolve(__dirname, 'demo/public-transport-routing.html'),
             demoNearbyTransport: path.resolve(__dirname, 'demo/nearby-transport.html'),

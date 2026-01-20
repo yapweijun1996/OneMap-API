@@ -29,6 +29,7 @@
 
 - `demo/search.html`：Elastic Search（`GET /api/common/elastic/search`，通常需要 token）
 - `demo/reverse-geocode.html`：Reverse Geocode（`GET /api/public/revgeocode`）
+- `demo/reverse-geocode-engineer.html`：Reverse Geocode 工程师手册（Copy/Paste + 参数/回传说明）
 - `demo/coordinate-to-address.html`：Reverse Geocode（純前端版本，包含 copy 按鈕與定位）
 
 ### Routing
@@ -81,4 +82,3 @@
 ### file:// 打不開 / module 被擋
 
 請用 `npm run dev` 或 `python -m http.server` 方式提供靜態站點，不要直接用 `file://` 開。
-
