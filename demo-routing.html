@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneMap Demo - Routing & Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        #map {
+            height: 500px;
+            border-radius: 12px;
+        }
+
+        .route-step {
+            transition: all 0.2s ease;
+        }
+
+        .route-step:hover {
+            background-color: #f0fdf4;
+        }
+    </style>
+  <script type="module" crossorigin src="./assets/demoRoutingStandalone-BvfiCjZj.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+</head>
+
+<body class="bg-gradient-to-br from-green-50 via-white to-green-100 min-h-screen p-6">
+
+    <!-- Back to Dashboard -->
+    <div class="max-w-5xl mx-auto mb-4">
+        <a href="./index.html" class="inline-flex items-center text-green-600 hover:text-green-800 font-medium">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-block mb-3">
+                <div
+                    class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center shadow-lg">
+                    <span class="text-4xl">🚗</span>
+                </div>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Routing & Navigation</h1>
+            <p class="text-gray-600">Get optimized routes for driving, walking, cycling, and public transport</p>
+        </div>
+
+        <!-- Route Planning Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-6 border-2 border-green-100">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Plan Your Route</h2>
+
+            <div class="space-y-4">
+                <!-- Start Location -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        📍 Start Location
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="startLat" placeholder="Latitude (e.g., 1.3521)" step="0.000001"
+                            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" />
+                        <input type="number" id="startLng" placeholder="Longitude (e.g., 103.8198)" step="0.000001"
+                            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" />
+                    </div>
+                </div>
+
+                <!-- End Location -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        🎯 End Location
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="endLat" placeholder="Latitude (e.g., 1.2830)" step="0.000001"
+                            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" />
+                        <input type="number" id="endLng" placeholder="Longitude (e.g., 103.8607)" step="0.000001"
+                            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none" />
+                    </div>
+                </div>
+
+                <!-- Route Type -->
+                <div>
+                    <label for="routeType" class="block text-sm font-semibold text-gray-700 mb-2">
+                        🚦 Route Type
+                    </label>
+                    <select id="routeType"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none">
+                        <option value="drive">🚗 Driving</option>
+                        <option value="walk">🚶 Walking</option>
+                        <option value="cycle">🚴 Cycling</option>
+                        <option value="pt">🚌 Public Transport</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3">
+                    <button id="btnRoute"
+                        class="flex-1 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+                        🗺️ Get Route
+                    </button>
+                    <button id="btnSwap"
+                        class="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+                        ⇅ Swap
+                    </button>
+                    <button id="btnClear"
+                        class="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Examples -->
+            <div class="mt-6 p-4 bg-green-50 rounded-xl">
+                <p class="text-sm font-semibold text-green-900 mb-2">Quick Examples:</p>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        class="example-btn px-3 py-1 bg-white border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100 transition-colors"
+                        data-start="1.3521,103.8198" data-end="1.2830,103.8607">Raffles → Marina Bay</button>
+                    <button
+                        class="example-btn px-3 py-1 bg-white border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100 transition-colors"
+                        data-start="1.3009,103.8570" data-end="1.3048,103.8318">Bugis → Orchard</button>
+                    <button
+                        class="example-btn px-3 py-1 bg-white border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100 transition-colors"
+                        data-start="1.2830,103.8607" data-end="1.3644,103.9915">Marina Bay → Changi</button>
+                </div>
+            </div>
+
+            <div id="errorMsg" class="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 hidden"></div>
+        </div>
+
+        <!-- Map -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-2 border-green-100">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Route Map</h2>
+            <div id="map"></div>
+        </div>
+
+        <!-- Route Summary -->
+        <div id="routeSummary" class="bg-white rounded-2xl shadow-lg p-8 mb-6 border-2 border-green-100 hidden">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Route Summary</h2>
+            <div id="summaryContent"></div>
+        </div>
+
+        <!-- Turn-by-Turn Directions -->
+        <div id="directionsPanel" class="bg-white rounded-2xl shadow-lg p-8 border-2 border-green-100 hidden">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Turn-by-Turn Directions</h2>
+            <div id="directionsContent"></div>
+        </div>
+    </div>
+</body>
+
+</html>
