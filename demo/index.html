@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneMap Demo Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div class="mx-auto max-w-5xl px-4 py-10">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900">OneMap Demo Hub</h1>
+          <p class="mt-2 text-slate-600">
+            每个功能都是独立的 <code class="font-mono">.html</code>，方便工程师直接复制/粘贴使用。
+          </p>
+          <p class="mt-2 text-xs text-slate-500">
+            安全提醒：需要 token 的 demo 仅用于学习；不要把 OneMap 账号密码写进代码或提交到 Git。
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <a
+            class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            href="../app.html"
+            >打开 Explorer (app.html)</a
+          >
+          <a
+            class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+            href="../index.html"
+            >回到 Dashboard</a
+          >
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./public-transport-routing.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-700">Routing</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Public Transport Routing</div>
+          <div class="mt-1 text-sm text-slate-600">GET /public/routingsvc/route (routeType=pt)</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./nearby-transport.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-700">Transport</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Nearby Transport</div>
+          <div class="mt-1 text-sm text-slate-600">GET /public/nearbysvc/getNearestBusStops / MRT</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./population-query.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-purple-700">Analytics</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Population Query</div>
+          <div class="mt-1 text-sm text-slate-600">GET /public/popapi/*</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./static-map.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-700">Maps</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Static Map Image</div>
+          <div class="mt-1 text-sm text-slate-600">GET /staticmap/getStaticImage</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./minimap.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-700">Widget</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Minimap Embed</div>
+          <div class="mt-1 text-sm text-slate-600">https://www.onemap.gov.sg/minimap/</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./auth-token.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-red-700">Auth</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">获取 Token (JWT)</div>
+          <div class="mt-1 text-sm text-slate-600">POST /auth/post/getToken</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./search.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-blue-700">Search</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Elastic Search</div>
+          <div class="mt-1 text-sm text-slate-600">GET /common/elastic/search (token)</div>
+        </a>
+
+	        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./reverse-geocode.html">
+	          <div class="text-xs font-bold uppercase tracking-wider text-indigo-700">Geocoding</div>
+	          <div class="mt-2 text-xl font-bold text-slate-900">Reverse Geocode</div>
+	          <div class="mt-1 text-sm text-slate-600">GET /public/revgeocode</div>
+	        </a>
+
+	        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./reverse-geocode-engineer.html">
+	          <div class="text-xs font-bold uppercase tracking-wider text-indigo-700">Geocoding</div>
+	          <div class="mt-2 text-xl font-bold text-slate-900">Reverse Geocode（工程师手册）</div>
+	          <div class="mt-1 text-sm text-slate-600">Copy/Paste + 参数/回传说明</div>
+	        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./routing.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-700">Routing</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Drive / Walk / Cycle</div>
+          <div class="mt-1 text-sm text-slate-600">GET /public/routingsvc/route</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./themes.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-purple-700">Data</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Themes</div>
+          <div class="mt-1 text-sm text-slate-600">GET /public/themesvc/retrieveTheme</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./planning-area-2024.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-rose-700">Boundaries</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Planning Areas (2024)</div>
+          <div class="mt-1 text-sm text-slate-600">GET /public/planningarea?year=2024</div>
+        </a>
+
+        <a
+          class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg"
+          href="./convert-4326-to-3414.html"
+        >
+          <div class="text-xs font-bold uppercase tracking-wider text-orange-700">Tools</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">WGS84 → SVY21</div>
+          <div class="mt-1 text-sm text-slate-600">GET /common/convert/4326to3414</div>
+        </a>
+
+        <a class="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-lg" href="./basemap-tiles.html">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-700">Mapping</div>
+          <div class="mt-2 text-xl font-bold text-slate-900">Basemap Tiles</div>
+          <div class="mt-1 text-sm text-slate-600">Leaflet + tile styles</div>
+        </a>
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-700">
+        <div class="font-bold text-slate-900">本机打开</div>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          <li><code class="font-mono">npm run dev</code> 后访问：<code class="font-mono">/demo/index.html</code></li>
+          <li>或用静态服务器（避免 file:// 模块限制）</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

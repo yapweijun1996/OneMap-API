@@ -1,0 +1,7 @@
+{
+  "name": "Copy of OneMap Explorer SG v1.1.2",
+  "description": "A comprehensive demo of the Singapore OneMap API features including basemaps, geocoding search, and routing services using React and Leaflet.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

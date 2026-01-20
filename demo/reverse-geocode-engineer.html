@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneMap 工程师手册：Reverse Geocode（坐标 → 地址）</title>
+    <script type="module" crossorigin src="/assets/demoReverseGeocodeEngineer-DfQPXI4p.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="stylesheet" crossorigin href="/assets/demoReverseGeocodeEngineer-DxcmGfV2.css">
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div>
+          <h1>Reverse Geocode（坐标 → 地址）工程师手册</h1>
+          <p class="sub">
+            一页讲清楚：怎么用 <code>GET /api/public/revgeocode</code> 把坐标变地址，并提供可直接 copy/paste 的 JS helper。
+          </p>
+        </div>
+        <nav class="nav">
+          <a href="#try">直接试</a>
+          <a href="#handbook">参数/回传</a>
+          <a href="#copy">Copy/Paste</a>
+          <a class="ghost" href="./index.html">回 Demo Hub</a>
+        </nav>
+      </header>
+
+      <main class="grid" id="try">
+        <section class="card">
+          <h2>Try It</h2>
+
+          <div class="hint">
+            说明：目前 OneMap <code>revgeocode</code> 会回 <code>401 Unauthorized</code>，需要 token。本页会在你点击查询时自动用 email/password 取得 token。
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="email">OneMap Email（不会储存）</label>
+              <input id="email" type="email" autocomplete="username" placeholder="name@example.com" />
+            </div>
+            <div>
+              <label for="password">OneMap Password（不会储存）</label>
+              <input id="password" type="password" autocomplete="current-password" placeholder="Required" />
+            </div>
+          </div>
+
+          <div class="btns">
+            <button class="secondary" id="btnLogin">Get Token</button>
+            <div class="pill" id="tokenStatus"><b>Token</b><span>未取得</span></div>
+          </div>
+
+          <label for="combined">Combined（Lat, Lng）</label>
+          <input id="combined" placeholder="例如：1.3115879133, 103.8633751244" />
+
+          <div class="row">
+            <div>
+              <label for="lat">Latitude</label>
+              <input id="lat" inputmode="decimal" placeholder="1.3521" />
+            </div>
+            <div>
+              <label for="lng">Longitude</label>
+              <input id="lng" inputmode="decimal" placeholder="103.8198" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="buffer">Buffer（米）</label>
+              <input id="buffer" inputmode="numeric" value="50" />
+            </div>
+            <div>
+              <label for="addressType">Address Type</label>
+              <select id="addressType">
+                <option value="All" selected>All（通用）</option>
+                <option value="HDB">HDB</option>
+                <option value="Private">Private</option>
+              </select>
+            </div>
+          </div>
+
+          <input id="token" type="hidden" />
+
+          <div class="btns">
+            <button id="btnLookup">Reverse Geocode（自动取 token）</button>
+            <button class="secondary" id="btnClear">Clear</button>
+            <button class="secondary" id="btnCopyCurl">Copy cURL</button>
+          </div>
+
+          <div class="hint">
+            多笔结果很正常：代表 <code>buffer</code> 半径内命中多个候选点；想更“准”就缩小 buffer（例如 10~30）。<br />
+            生产环境建议：由后端代发请求，不要在前端保存 token。
+          </div>
+          <div class="toast" id="toast"></div>
+        </section>
+
+        <section class="card">
+          <h2>Results</h2>
+          <div class="pill" id="status"><b>Status</b><span>等待查询…</span></div>
+          <div class="results" id="results"></div>
+
+          <label for="raw">Raw JSON（Debug）</label>
+          <textarea id="raw" readonly placeholder="查询后会显示 OneMap 回传 JSON"></textarea>
+
+          <div class="btns">
+            <button class="secondary" id="btnCopyJson" disabled>Copy JSON</button>
+          </div>
+        </section>
+      </main>
+
+      <section class="card section" id="handbook">
+        <h2>Handbook</h2>
+        <div class="cols">
+          <div>
+            <h3>接口与参数</h3>
+            <ul>
+              <li><code>GET /api/public/revgeocode?location=LAT,LNG&buffer=50&addressType=All</code></li>
+              <li><code>location</code>：WGS84 经纬度（不是 SVY21 X/Y）</li>
+              <li><code>buffer</code>：米；越小越精准，但越容易 0 结果</li>
+              <li><code>addressType</code>：<code>All | HDB | Private</code></li>
+              <li>回传核心：<code>GeocodeInfo[]</code>（候选地址清单）</li>
+            </ul>
+          </div>
+          <div>
+            <h3>你问的：信息够了吗？</h3>
+            <ul>
+              <li>拼“可显示的地址”：够（<code>BUILDINGNAME / BLOCK / ROAD / POSTALCODE</code>）</li>
+              <li>精确到单位号/楼层/门牌：不保证（revgeocode 不一定给）</li>
+              <li><code>XCOORD / YCOORD</code> 是 SVY21，可用于本地换算/对齐</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid section" id="copy">
+        <section class="card">
+          <h2>Copy/Paste（JS Helper）</h2>
+          <div class="btns">
+            <button class="secondary" id="btnCopyHelper">Copy Helper</button>
+            <button class="secondary" id="btnCopyUsage">Copy Usage</button>
+          </div>
+          <textarea id="helper" readonly></textarea>
+        </section>
+
+        <section class="card">
+          <h2>Mermaid Logic</h2>
+          <div class="btns">
+            <button class="secondary" id="btnCopyMermaid">Copy Mermaid</button>
+          </div>
+          <textarea id="mermaid" readonly></textarea>
+        </section>
+      </section>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneMap Demo：座標 → 完整地址 (Reverse Geocode)</title>
+  <link rel="stylesheet" href="./reverse-geocode.css" />
+</head>
+
+<body>
+  <!-- AMENDMENT [start] "Redesign to Apple style - preserving old structure commented out" -->
+  <!--
+  <div class="wrap">
+    <h1>OneMap Demo：座標 → 完整地址</h1>
+    <p class="sub">
+      這頁只做一件事：輸入 <b>Latitude/Longitude</b>，透過 OneMap <code>revgeocode</code> 取得完整地址並顯示結果。<br />
+      建議用 <code>npm run dev</code> 開啟：<code>/demo/reverse-geocode.html</code>（避免 <code>file://</code> 的 CORS/模組限制）。
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin: 0 0 10px; font-size: 16px">輸入</h2>
+
+        <label for="email">OneMap Email（不會儲存，頁面刷新即清空）</label>
+        <input id="email" type="email" autocomplete="username" placeholder="name@example.com" />
+
+        <label for="password">OneMap Password（不會儲存，頁面刷新即清空）</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+
+        <label for="combined">Combined (Latitude, Longitude)</label>
+        <input id="combined" placeholder="1.3521, 103.8198" />
+
+        <div class="row">
+          <div>
+            <label for="lat">Latitude</label>
+            <input id="lat" inputmode="decimal" placeholder="1.3521" />
+          </div>
+          <div>
+            <label for="lng">Longitude</label>
+            <input id="lng" inputmode="decimal" placeholder="103.8198" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="buffer">Buffer（公尺）</label>
+            <input id="buffer" inputmode="numeric" value="50" />
+          </div>
+          <div>
+            <label for="addressType">Address Type</label>
+            <select id="addressType">
+              <option value="All" selected>All</option>
+              <option value="HDB">HDB</option>
+              <option value="Private">Private</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" id="btnLogin">1) 取得 Token</button>
+          <button class="primary" id="btnLookup" disabled>2) 取得完整地址</button>
+          <button id="btnClear">清除</button>
+        </div>
+
+        <div class="pill status" id="tokenStatus"><b>Token</b><span>尚未取得</span></div>
+        <div class="hint">
+          複製到別的專案時，只要帶走 <code>demo/onemap-client.js</code> 與你自己的 UI 即可。<br />
+          安全提醒：不要把帳號密碼寫進程式碼/提交到 Git。
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin: 0 0 10px; font-size: 16px">結果</h2>
+        <div id="results" class="results"></div>
+        <pre id="raw" aria-label="raw json"></pre>
+      </div>
+    </div>
+  </div>
+-->
+  <!-- AMENDMENT [end] "Redesign to Apple style - preserving old structure commented out" -->
+
+  <!-- AMENDMENT [start] "New Apple Style Markup" -->
+  <div class="apple-container">
+    <div class="apple-header">
+      <h1>Reverse Geocode</h1>
+      <p>Convert coordinates to precise addresses instantly.</p>
+    </div>
+
+    <div class="apple-grid">
+      <!-- Input Section -->
+      <div class="apple-card">
+        <div class="apple-card-title">Configuration</div>
+
+        <label for="email">OneMap Email</label>
+        <input id="email" type="email" autocomplete="username" placeholder="name@example.com" />
+
+        <label for="password">OneMap Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Required" />
+
+        <label for="combined">Dimensions (Lat, Lng)</label>
+        <input id="combined" placeholder="1.3521, 103.8198" />
+
+        <div class="form-row">
+          <div>
+            <label for="lat">Latitude</label>
+            <input id="lat" inputmode="decimal" placeholder="1.3521" />
+          </div>
+          <div>
+            <label for="lng">Longitude</label>
+            <input id="lng" inputmode="decimal" placeholder="103.8198" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="buffer">Buffer (Meters)</label>
+            <input id="buffer" inputmode="numeric" value="50" />
+          </div>
+          <div>
+            <label for="addressType">Type</label>
+            <select id="addressType">
+              <option value="All" selected>All Properties</option>
+              <option value="HDB">HDB Only</option>
+              <option value="Private">Private Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="apple-btns">
+          <button class="apple-btn" id="btnLogin">Get Token</button>
+          <button class="apple-btn" id="btnLookup" disabled>Search</button>
+          <button class="apple-btn apple-btn-secondary" id="btnClear">Clear</button>
+        </div>
+
+        <div class="status-pill" id="tokenStatus">
+          <span>Token Status</span>
+          <b style="color: var(--text-secondary)">Not Retrieved</b>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="apple-card">
+        <div class="apple-card-title">Results</div>
+        <div id="results">
+          <div style="color: var(--text-secondary); text-align: center; padding: 40px 0;">
+            Enter coordinates to view address details.
+          </div>
+        </div>
+        <div id="raw" class="json-view" style="display: none;"></div>
+      </div>
+    </div>
+
+    <div class="footer-hint">
+      <p>Powered by OneMap API. <br>Secure implementation: Do not commit credentials to version control.</p>
+    </div>
+  </div>
+  <!-- AMENDMENT [end] "New Apple Style Markup" -->
+
+  <script type="module" src="./reverse-geocode.js"></script>
+</body>
+
+</html>

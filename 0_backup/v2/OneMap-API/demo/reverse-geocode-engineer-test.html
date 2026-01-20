@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Geocode Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+        #json-output {
+            background: #f0f0f0;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid #ccc;
+            min-height: 100px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Reverse Geocode Engineer Test</h1>
+
+    <div class="controls">
+        <h3>OneMap Credentials</h3>
+        <p>Required for API access. Saved to localStorage for convenience.</p>
+        <div>
+            <label>Email: <input type="email" id="email" placeholder="name@example.com"></label>
+            <label>Password: <input type="password" id="password" placeholder="Required"></label>
+            <button id="save-creds">Save & Retry</button>
+        </div>
+    </div>
+
+    <h3>Output</h3>
+    <div>
+        <strong>Status: </strong><span id="status">Idle</span>
+    </div>
+    <br>
+    <pre id="json-output"></pre>
+
+    <script type="module" src="./reverse-geocode-engineer-test.js"></script>
+</body>
+
+</html>
